@@ -7,4 +7,5 @@ public class Constant {
     // and therefore the entire network service will not work correctly
     public static final String SOURCE_URL = "http://api.nbp.pl/api/exchangerates/tables/c/?format=json";
     public static final String AFTER_COMMISSION = "0.98";
+    public static final String DEFAULT_CURRENCY_SYMBOL = "zł";
 }

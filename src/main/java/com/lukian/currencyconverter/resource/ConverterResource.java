@@ -19,8 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Set;
 
+import static com.lukian.currencyconverter.constant.Constant.DEFAULT_CURRENCY_SYMBOL;
 import static com.lukian.currencyconverter.constant.HttpConstant.*;
 
 @RestController
@@ -35,7 +36,7 @@ public class ConverterResource extends ExceptionHandling {
 
     @GetMapping("/")
     @Operation(description = "Get all currencies")
-    public ResponseEntity<List<Rate>> getAll() {
+    public ResponseEntity<Set<Rate>> getAll() {
         return new ResponseEntity<>(provider.getRates(), HttpStatus.OK);
     }
 
@@ -51,7 +52,7 @@ public class ConverterResource extends ExceptionHandling {
     @Operation(description = "buy default currency from foreign currency", summary = "sale currency")
     public ResponseEntity<String> saleCurrency(@RequestBody CurrencyDTO currencyDTO)
             throws RateNotFoundException, BelowZeroException {
-        return new ResponseEntity<>(provider.saleCurrency(currencyDTO) + "zł", HttpStatus.OK);
+        return new ResponseEntity<>(provider.saleCurrency(currencyDTO) + DEFAULT_CURRENCY_SYMBOL, HttpStatus.OK);
     }
 
     @PostMapping("/convert")

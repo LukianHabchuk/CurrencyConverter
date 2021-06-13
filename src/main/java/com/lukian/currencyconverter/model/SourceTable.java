@@ -3,7 +3,7 @@ package com.lukian.currencyconverter.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
@@ -12,5 +12,5 @@ public class SourceTable {
     private String no;
     private String tradingDate;
     private String effectiveDate;
-    private List<Rate> rates;
+    private Set<Rate> rates;
 }
