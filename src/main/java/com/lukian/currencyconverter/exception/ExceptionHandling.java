@@ -38,8 +38,8 @@ public class ExceptionHandling implements ErrorController {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<HttpResponse> badCurrencyCodeException() {
-        return createHttpResponse(BAD_REQUEST, "SUCH CURRENCY CODE IS NOT EXISTS! " +
-                "YOU CAN CHOOSE ONE FROM THE FOLLOWING: " + Arrays.toString(Code.values()));
+        return createHttpResponse(BAD_REQUEST, String.format("SUCH CURRENCY CODE IS NOT EXISTS! " +
+                "YOU CAN CHOOSE ONE FROM THE FOLLOWING: %s", Arrays.toString(Code.values())));
     }
 
     @ExceptionHandler(Exception.class)

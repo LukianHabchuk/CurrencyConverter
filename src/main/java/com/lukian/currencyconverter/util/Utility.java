@@ -17,7 +17,7 @@ public class Utility {
     }
 
     public static void validate(BigDecimal value) throws BelowZeroException {
-        if (value.compareTo(BigDecimal.ZERO) < 0) throw new BelowZeroException("value " + value + " below zero");
+        if (value.compareTo(BigDecimal.ZERO) < 0) throw new BelowZeroException(String.format("value %s below zero", value));
     }
 
     public static BigDecimal commission(BigDecimal value) {

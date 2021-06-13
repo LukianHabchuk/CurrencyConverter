@@ -40,7 +40,7 @@ public class ConverterResource extends ExceptionHandling {
     }
 
     @PostMapping("/buy")
-    @Operation(description = "buy of foreign currency from default currency", summary = "buy currency")
+    @Operation(description = "buy foreign currency from default currency", summary = "buy currency")
     public ResponseEntity<String> buyCurrency(@RequestBody CurrencyDTO currencyDTO)
             throws RateNotFoundException, BelowZeroException {
         return new ResponseEntity<>(provider.buyCurrency(currencyDTO)
@@ -48,7 +48,7 @@ public class ConverterResource extends ExceptionHandling {
     }
 
     @PostMapping("/sale")
-    @Operation(description = "buy of default currency from foreign currency", summary = "sale currency")
+    @Operation(description = "buy default currency from foreign currency", summary = "sale currency")
     public ResponseEntity<String> saleCurrency(@RequestBody CurrencyDTO currencyDTO)
             throws RateNotFoundException, BelowZeroException {
         return new ResponseEntity<>(provider.saleCurrency(currencyDTO) + "zł", HttpStatus.OK);

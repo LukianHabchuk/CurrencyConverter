@@ -26,15 +26,13 @@ import static com.lukian.currencyconverter.util.Utility.*;
 @Slf4j
 public class CurrencyService {
     private final RestTemplate restTemplate;
-    private List<Rate> rates;
+    private final List<Rate> rates;
 
     public CurrencyService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        initRates();
-    }
-
-    private void initRates() {
         this.rates = new ArrayList<>();
+
+        //the below construct is needed in case of api connection error
         try {
             this.rates.addAll(getAll());
             log.info("RATES INITIATED SUCCESSFULLY");
@@ -49,14 +47,14 @@ public class CurrencyService {
 
     public BigDecimal buyCurrency(CurrencyDTO currencyDTO) throws RateNotFoundException, BelowZeroException {
         validate(currencyDTO.getValue());
-        log.info("VALUE IS VALID FOR "+ currencyDTO.getCode()+" BUYING");
+        log.info(String.format("VALUE IS VALID FOR %s BUYING", currencyDTO.getCode()));
         return commission(currencyDTO.getValue())
                 .divide(getRate(currencyDTO.getCode()).getAsk(), 2, RoundingMode.HALF_EVEN);
     }
 
     public BigDecimal saleCurrency(CurrencyDTO currencyDTO) throws RateNotFoundException, BelowZeroException {
         validate(currencyDTO.getValue());
-        log.info("VALUE IS VALID FOR "+ currencyDTO.getCode()+" SALLYING");
+        log.info(String.format("VALUE IS VALID FOR %s SALLYING", currencyDTO.getCode()));
         return commission(currencyDTO.getValue())
                 .multiply(getRate(currencyDTO.getCode()).getBid())
                 .divide(BigDecimal.valueOf(1), 2, RoundingMode.HALF_EVEN);
@@ -68,14 +66,8 @@ public class CurrencyService {
             log.info("Current currency and target currency are not identical.");
             BigDecimal defaultCurrency = saleCurrency(convertDTO.getCurrencyDTO());
             return buyCurrency(new CurrencyDTO(defaultCurrency, convertDTO.getTargetCode()));
-        } else throw new IdenticalCurrenciesException("you selected identical currencies: "+convertDTO.getTargetCode().name());
-    }
-
-    private Rate getRate(Code code) throws RateNotFoundException {
-        return getRates().stream()
-                .filter(r -> r.getCode() == code)
-                .findFirst()
-                .orElseThrow(() -> new RateNotFoundException("Rate with name: " + code + " was not found"));
+        } else throw new IdenticalCurrenciesException(
+                String.format("you selected identical currencies: %s", convertDTO.getTargetCode().name()));
     }
 
     private List<Rate> getAll() throws SourceNotFoundException {
@@ -84,7 +76,14 @@ public class CurrencyService {
             if (json == null) throw new SourceNotFoundException("source is empty");
             else return json[0].getRates();
         } catch (HttpClientErrorException e) {
-            throw new SourceNotFoundException("source url is invalid");
+            throw new SourceNotFoundException("source url is invalid!");
         }
+    }
+
+    private Rate getRate(Code code) throws RateNotFoundException {
+        return getRates().stream()
+                .filter(r -> r.getCode() == code)
+                .findFirst()
+                .orElseThrow(() -> new RateNotFoundException(String.format("Rate with name: %s was not found", code)));
     }
 }
