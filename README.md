@@ -17,7 +17,7 @@ Prerequisites:
 or `mvnw.cmd clean install` (Windows); 
 or use built in tools;
 
-## Use the url: [url](http://localhost:8081/swagger-ui/)
+## Use the url: (http://localhost:8081/swagger-ui/)
 to comfortably familiarize yourself with the functionality
 
 Or:
