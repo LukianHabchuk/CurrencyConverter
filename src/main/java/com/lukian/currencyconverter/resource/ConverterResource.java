@@ -2,12 +2,9 @@ package com.lukian.currencyconverter.resource;
 
 import com.lukian.currencyconverter.dto.ConvertDTO;
 import com.lukian.currencyconverter.dto.CurrencyDTO;
-import com.lukian.currencyconverter.exception.BelowZeroException;
-import com.lukian.currencyconverter.exception.IdenticalCurrenciesException;
-import com.lukian.currencyconverter.exception.RateNotFoundException;
+import com.lukian.currencyconverter.exception.ExceptionHandling;
 import com.lukian.currencyconverter.model.Rate;
 import com.lukian.currencyconverter.service.CurrencyService;
-import com.lukian.currencyconverter.exception.ExceptionHandling;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,24 +39,21 @@ public class ConverterResource extends ExceptionHandling {
 
     @PostMapping("/buy")
     @Operation(description = "buy foreign currency from default currency", summary = "buy currency")
-    public ResponseEntity<String> buyCurrency(@RequestBody CurrencyDTO currencyDTO)
-            throws RateNotFoundException, BelowZeroException {
+    public ResponseEntity<String> buyCurrency(@RequestBody CurrencyDTO currencyDTO) {
         return new ResponseEntity<>(provider.buyCurrency(currencyDTO)
                 + currencyDTO.getCode().getSymbol(), HttpStatus.OK);
     }
 
     @PostMapping("/sale")
     @Operation(description = "buy default currency from foreign currency", summary = "sale currency")
-    public ResponseEntity<String> saleCurrency(@RequestBody CurrencyDTO currencyDTO)
-            throws RateNotFoundException, BelowZeroException {
+    public ResponseEntity<String> saleCurrency(@RequestBody CurrencyDTO currencyDTO) {
         return new ResponseEntity<>(provider.saleCurrency(currencyDTO) + DEFAULT_CURRENCY_SYMBOL, HttpStatus.OK);
     }
 
     @PostMapping("/convert")
     @Operation(description = "conversion of one foreign currency to another", summary = "convert currency")
     @ApiResponses(value = @ApiResponse(code = NOT_ACCEPTABLE_CODE, message = NOT_ACCEPTABLE_MESSAGE))
-    public ResponseEntity<String> convertCurrency(@RequestBody ConvertDTO convertDTO)
-            throws RateNotFoundException, BelowZeroException, IdenticalCurrenciesException {
+    public ResponseEntity<String> convertCurrency(@RequestBody ConvertDTO convertDTO) {
         return new ResponseEntity<>(provider.convertCurrency(convertDTO)
                 + convertDTO.getTargetCode().getSymbol(), HttpStatus.OK);
     }

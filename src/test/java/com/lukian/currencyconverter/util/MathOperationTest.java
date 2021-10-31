@@ -7,7 +7,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import static com.lukian.currencyconverter.constant.Constant.AFTER_COMMISSION;
-import static com.lukian.currencyconverter.util.MathOperation.*;
+import static com.lukian.currencyconverter.util.MathOperation.divide;
+import static com.lukian.currencyconverter.util.MathOperation.multiply;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MathOperationTest {
@@ -17,25 +18,25 @@ class MathOperationTest {
     private final BigDecimal VALUE0 = new BigDecimal(0);
 
     @Test
-    void shouldMultiply() throws BelowZeroException {
+    void shouldMultiply() {
         assertEquals(VALUE100.multiply(new BigDecimal(AFTER_COMMISSION))
                 .multiply(VALUE100).setScale(2, RoundingMode.HALF_EVEN), multiply(VALUE100, VALUE100));
     }
 
     @Test
-    void shouldMultiplyValueZero() throws BelowZeroException {
+    void shouldMultiplyValueZero() {
         assertEquals(VALUE0.multiply(new BigDecimal(AFTER_COMMISSION))
                 .multiply(VALUE100).setScale(2, RoundingMode.HALF_EVEN), multiply(VALUE0, VALUE100));
     }
 
     @Test
-    void shouldMultiplyAskZero() throws BelowZeroException {
+    void shouldMultiplyAskZero() {
         assertEquals(VALUE100.multiply(new BigDecimal(AFTER_COMMISSION))
                 .multiply(VALUE0).setScale(2, RoundingMode.HALF_EVEN), multiply(VALUE100, VALUE0));
     }
 
     @Test
-    void shouldMultiplyBothZero() throws BelowZeroException {
+    void shouldMultiplyBothZero() {
         assertEquals(VALUE0.multiply(new BigDecimal(AFTER_COMMISSION))
                 .multiply(VALUE0).setScale(2, RoundingMode.HALF_EVEN), multiply(VALUE0, VALUE0));
     }
@@ -61,19 +62,19 @@ class MathOperationTest {
     }
 
     @Test
-    void shouldDivide() throws BelowZeroException {
+    void shouldDivide() {
         assertEquals(VALUE100.multiply(new BigDecimal(AFTER_COMMISSION))
                 .divide(VALUE100, 2, RoundingMode.HALF_EVEN), divide(VALUE100, VALUE100));
     }
 
     @Test
-    void shouldDivideValueZero() throws BelowZeroException {
+    void shouldDivideValueZero() {
         assertEquals(VALUE0.multiply(new BigDecimal(AFTER_COMMISSION))
                 .divide(VALUE100, 2, RoundingMode.HALF_EVEN), divide(VALUE0, VALUE100));
     }
 
     @Test
-    void shouldNotDivideBidZero() throws BelowZeroException {
+    void shouldNotDivideBidZero() {
         try {
             divide(VALUE100, VALUE0);
             fail();

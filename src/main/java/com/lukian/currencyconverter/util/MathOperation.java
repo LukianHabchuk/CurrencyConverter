@@ -26,7 +26,8 @@ public class MathOperation {
     }
 
     private static void validate(BigDecimal value) throws BelowZeroException {
-        if (value.compareTo(BigDecimal.ZERO) < 0) throw new BelowZeroException(String.format("value %s below zero", value));
+        if (value.compareTo(BigDecimal.ZERO) < 0)
+            throw new BelowZeroException(String.format("value %s below zero", value));
     }
 
     private static void validateZero(BigDecimal value) throws NullPointerException, BelowZeroException {

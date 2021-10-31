@@ -41,43 +41,44 @@ class CurrencyServiceTest {
     }
 
     @Test
-    void shouldCorrectlyCalculateBuyingCurrencyAmount() throws RateNotFoundException, BelowZeroException {
-        assertEquals(divide(VALUE100, rate.getAsk()),
-                provider.buyCurrency(new CurrencyDTO(VALUE100, rate.getCode())));
+    void shouldCorrectlyCalculateBuyingCurrencyAmount() {
+        var currencyDTO = new CurrencyDTO(VALUE100, rate.getCode());
+        assertEquals(divide(VALUE100, rate.getAsk()), provider.buyCurrency(currencyDTO));
     }
 
     @Test
-    void shouldPurchaseZeroCurrencyAmount() throws RateNotFoundException, BelowZeroException {
-        assertEquals(TOTAL_ZERO,
-                provider.buyCurrency(new CurrencyDTO(VALUE0, rate.getCode())).toString());
+    void shouldPurchaseZeroCurrencyAmount() {
+        var currencyDTO = new CurrencyDTO(VALUE0, rate.getCode());
+        assertEquals(TOTAL_ZERO, provider.buyCurrency(currencyDTO).toString());
     }
 
     @Test
-    void shouldNotPurchaseBelowZeroCurrencyAmount() throws RateNotFoundException {
+    void shouldNotPurchaseBelowZeroCurrencyAmount() {
+        var currencyDTO = new CurrencyDTO(VALUE_MINUS100, rate.getCode());
         try {
-            provider.buyCurrency(new CurrencyDTO(VALUE_MINUS100, rate.getCode()));
+            provider.buyCurrency(currencyDTO);
             fail();
-        }  catch (BelowZeroException e) {
+        } catch (BelowZeroException e) {
             assertTrue(true);
         }
     }
 
     @Test
-    void shouldCorrectlyCalculateSaleCurrencyAmount() throws RateNotFoundException, BelowZeroException {
-        assertEquals(multiply(VALUE100, rate.getBid()),
-                provider.saleCurrency(new CurrencyDTO(VALUE100, rate.getCode())));
+    void shouldCorrectlyCalculateSaleCurrencyAmount() {
+        var currencyDTO = new CurrencyDTO(VALUE100, rate.getCode());
+        assertEquals(multiply(VALUE100, rate.getBid()), provider.saleCurrency(currencyDTO));
     }
 
     @Test
-    void shouldCalculateZeroSaleCurrencyAmount() throws RateNotFoundException, BelowZeroException {
-        assertEquals(TOTAL_ZERO,
-                provider.saleCurrency(new CurrencyDTO(VALUE0, rate.getCode())).toString());
+    void shouldCalculateZeroSaleCurrencyAmount() {
+        assertEquals(TOTAL_ZERO, provider.saleCurrency(new CurrencyDTO(VALUE0, rate.getCode())).toString());
     }
 
     @Test
     void shouldNotCalculateBelowZeroSaleCurrencyAmount() throws RateNotFoundException {
+        var currencyDTO = new CurrencyDTO(VALUE_MINUS100, rate.getCode());
         try {
-            provider.saleCurrency(new CurrencyDTO(VALUE_MINUS100, rate.getCode()));
+            provider.saleCurrency(currencyDTO);
             fail();
         } catch (BelowZeroException e) {
             assertTrue(true);
@@ -85,33 +86,25 @@ class CurrencyServiceTest {
     }
 
     @Test
-    void shouldCorrectlyCalculateCurrencyConversion() throws RateNotFoundException, BelowZeroException, IdenticalCurrenciesException {
+    void shouldCorrectlyCalculateCurrencyConversion() {
         //when converting, the commission is charged 2 times:
         // when selling one currency and when buying another
         BigDecimal defaultCurrency = multiply(VALUE100, rate.getBid());
-        assertEquals(divide(defaultCurrency, targetRate.getAsk()),
-                provider.convertCurrency(new ConvertDTO(
-                        new CurrencyDTO(VALUE100, rate.getCode()),
-                        targetRate.getCode()
-                )));
+        var convertDTO = new ConvertDTO(new CurrencyDTO(VALUE100, rate.getCode()), targetRate.getCode());
+        assertEquals(divide(defaultCurrency, targetRate.getAsk()), provider.convertCurrency(convertDTO));
     }
 
     @Test
-    void shouldCalculateZeroCurrencyConversion() throws RateNotFoundException, BelowZeroException, IdenticalCurrenciesException {
-        assertEquals(TOTAL_ZERO,
-                provider.convertCurrency(new ConvertDTO(
-                        new CurrencyDTO(VALUE0, rate.getCode()),
-                        targetRate.getCode()
-                )).toString());
+    void shouldCalculateZeroCurrencyConversion() {
+        var convertDTO = new ConvertDTO(new CurrencyDTO(VALUE0, rate.getCode()), targetRate.getCode());
+        assertEquals(TOTAL_ZERO, provider.convertCurrency(convertDTO).toString());
     }
 
     @Test
-    void shouldNotCalculateBelowZeroCurrencyConversion() throws RateNotFoundException, IdenticalCurrenciesException {
+    void shouldNotCalculateBelowZeroCurrencyConversion() {
+        var convertDTO = new ConvertDTO(new CurrencyDTO(VALUE_MINUS100, rate.getCode()), targetRate.getCode());
         try {
-            provider.convertCurrency(new ConvertDTO(
-                    new CurrencyDTO(VALUE_MINUS100, rate.getCode()),
-                    targetRate.getCode()
-            ));
+            provider.convertCurrency(convertDTO);
             fail();
         } catch (BelowZeroException e) {
             assertTrue(true);
@@ -119,12 +112,10 @@ class CurrencyServiceTest {
     }
 
     @Test
-    void shouldNotCalculateCurrencyConversionWithIdenticalRates() throws RateNotFoundException, BelowZeroException {
+    void shouldNotCalculateCurrencyConversionWithIdenticalRates() {
+        var convertDTO = new ConvertDTO(new CurrencyDTO(VALUE100, rate.getCode()), rate.getCode());
         try {
-            provider.convertCurrency(new ConvertDTO(
-                    new CurrencyDTO(VALUE100, rate.getCode()),
-                    rate.getCode()
-            ));
+            provider.convertCurrency(convertDTO);
             fail();
         } catch (IdenticalCurrenciesException e) {
             assertTrue(true);

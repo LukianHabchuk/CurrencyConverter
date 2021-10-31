@@ -2,7 +2,6 @@ package com.lukian.currencyconverter.service;
 
 import com.lukian.currencyconverter.dto.ConvertDTO;
 import com.lukian.currencyconverter.dto.CurrencyDTO;
-import com.lukian.currencyconverter.exception.BelowZeroException;
 import com.lukian.currencyconverter.exception.IdenticalCurrenciesException;
 import com.lukian.currencyconverter.exception.RateNotFoundException;
 import com.lukian.currencyconverter.exception.SourceNotFoundException;
@@ -19,7 +18,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.lukian.currencyconverter.constant.Constant.SOURCE_URL;
-import static com.lukian.currencyconverter.util.MathOperation.*;
+import static com.lukian.currencyconverter.util.MathOperation.divide;
+import static com.lukian.currencyconverter.util.MathOperation.multiply;
 
 @Service
 @Slf4j
@@ -44,18 +44,18 @@ public class CurrencyService {
         return rates;
     }
 
-    public BigDecimal buyCurrency(CurrencyDTO currencyDTO) throws RateNotFoundException, BelowZeroException {
+    public BigDecimal buyCurrency(CurrencyDTO currencyDTO) {
         log.info(String.format("VALUE IS VALID FOR %s BUYING", currencyDTO.getCode()));
         return divide(currencyDTO.getValue(), getRate(currencyDTO.getCode()).getAsk());
     }
 
-    public BigDecimal saleCurrency(CurrencyDTO currencyDTO) throws RateNotFoundException, BelowZeroException {
+    public BigDecimal saleCurrency(CurrencyDTO currencyDTO) {
         log.info(String.format("VALUE IS VALID FOR %s SALLYING", currencyDTO.getCode()));
         return multiply(currencyDTO.getValue(), getRate(currencyDTO.getCode()).getBid());
     }
 
     //to convert currency, we first sell it and then buy another
-    public BigDecimal convertCurrency(ConvertDTO convertDTO) throws RateNotFoundException, BelowZeroException, IdenticalCurrenciesException {
+    public BigDecimal convertCurrency(ConvertDTO convertDTO) {
         if (isIdentical(convertDTO))
             throw new IdenticalCurrenciesException(
                     String.format("you selected identical currencies: %s", convertDTO.getTargetCode().name())
@@ -65,7 +65,7 @@ public class CurrencyService {
         return buyCurrency(new CurrencyDTO(defaultCurrency, convertDTO.getTargetCode()));
     }
 
-    private Set<Rate> getAll() throws SourceNotFoundException {
+    private Set<Rate> getAll() {
         try {
             var json = restTemplate.getForObject(SOURCE_URL, SourceTable[].class);
             if (json == null) throw new SourceNotFoundException("source is empty");
@@ -75,7 +75,7 @@ public class CurrencyService {
         }
     }
 
-    private Rate getRate(Code code) throws RateNotFoundException {
+    private Rate getRate(Code code) {
         return getRates().stream()
                 .filter(r -> r.getCode() == code)
                 .findFirst()
